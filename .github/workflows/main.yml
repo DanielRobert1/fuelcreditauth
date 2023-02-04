@@ -3,8 +3,8 @@ name: fuelcredit-laravel-cd
 env:
   "S3_BUCKET_NAME": "fuelcredit-laravel-bucket"
   "EBS_APPLICATION_NAME": "fuelcredit-laravel-prod"
-  "EBS_ENVIRONMENT_NAME": "fuelcreditphplaravelprod-env"
-  "AWS_REGION": "us-east-1"
+  "EBS_ENVIRONMENT_NAME": "Fuelcreditlaravelprod-env"
+  "AWS_REGION": "eu-central-1"
   "DEPLOY_PACKAGE_NAME": "laravel-app-${{github.sha}}.zip"
   
 on:
@@ -12,7 +12,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-  laravel-tests:
+  test:
     runs-on: ubuntu-latest
     
     steps:
@@ -38,6 +38,7 @@ jobs:
           DB_DATABASE: database/database.sqlite
         run: vendor/bin/phpunit
   build:
+    needs: test
     runs-on: ubuntu-latest
 
     steps:
@@ -63,7 +64,6 @@ jobs:
           aws elasticbeanstalk create-application-version \
           --application-name ${{env.EBS_APPLICATION_NAME}} \
           --source-bundle S3Bucket="${{env.S3_BUCKET_NAME}}",S3Key="${{env.DEPLOY_PACKAGE_NAME}}" \
-          --region eu-central-1 \
           --version-label "ver-${{ github.sha }}" \
           --description "commit-sha-${{ github.sha }}"
         
