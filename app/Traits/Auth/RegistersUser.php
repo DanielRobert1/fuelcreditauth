@@ -129,15 +129,19 @@ trait RegistersUser
         $this->token = $this->user
             ->createToken($device)
             ->plainTextToken;
+        
+        try {
+            event(new Registered($this->user));
 
-        event(new Registered($this->user));
-
-        event(new Authenticated($this->user, [
-            'user_agent' => request()->header('user-agent'),
-            'device' => $device,
-            'ip' => request()->ip(),
-            'login_at' => now(),
-        ]));
+            event(new Authenticated($this->user, [
+                'user_agent' => request()->header('user-agent'),
+                'device' => $device,
+                'ip' => request()->ip(),
+                'login_at' => now(),
+            ]));
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 
     /**
