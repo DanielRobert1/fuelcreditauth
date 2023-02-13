@@ -36,7 +36,7 @@ Route::group(['middleware' => ['guest:sanctum']], function () {
  */
 
  Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::get('user', [LoginController::class, 'getUser'])->name('api.user');
+    Route::get('users', [LoginController::class, 'getUser'])->name('api.user');
     Route::post('logout', [LoginController::class, 'logout'])->name('api.logout');
     Route::post('devices/logout', [LoginController::class, 'logoutAllDevices'])->name('api.devices.logout');
  });
